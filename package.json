@@ -1,0 +1,37 @@
+{
+  "name": "git-repo-generator",
+  "version": "0.1.0",
+  "description": "Git Repository Generator",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "tsc -w"
+  },
+  "bin": {
+    "my-library": "dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hhourani27/git-repo-generator.git"
+  },
+  "keywords": [
+    "git",
+    "repository",
+    "repo",
+    "generator"
+  ],
+  "author": "Habib El Hourani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hhourani27/git-repo-generator/issues"
+  },
+  "homepage": "https://github.com/hhourani27/git-repo-generator#readme",
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "typescript": "^5.5.3"
+  }
+}
