@@ -1,5 +1,7 @@
 import { Command } from "./command";
 import { toCommandImpl } from "./commandImpl";
+import fs from "node:fs";
+import path from "node:path";
 
 export async function generateGitRepo({
   dir,
@@ -8,6 +10,11 @@ export async function generateGitRepo({
   dir: string;
   commits: number;
 }): Promise<void> {
+  // Check that a .git folder doesn't exist
+  if (fs.existsSync(path.join(dir, ".git"))) {
+    throw new Error(`A Git repository already exists at ${dir}`);
+  }
+
   // Create commands
   const commands: Command[] = [{ init: { defaultBranch: "main" } }];
 
