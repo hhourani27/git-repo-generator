@@ -5,6 +5,8 @@ import path from "node:path";
 import git from "isomorphic-git";
 
 describe("generateGitRepo", () => {
+  const dir = "/test";
+
   beforeEach(() => {
     mock({});
   });
@@ -14,8 +16,6 @@ describe("generateGitRepo", () => {
   });
 
   test("Generate simple repo", async () => {
-    const dir = "/test";
-
     await generateGitRepo({
       dir,
       commits: 3,
@@ -27,5 +27,14 @@ describe("generateGitRepo", () => {
     expect(await fs.readFile(path.join(dir, "test.txt"), "utf-8")).toEqual(
       "line 1\nline 2\nline 3"
     );
+  });
+
+  test("Generate simple repo with no commit", async () => {
+    await generateGitRepo({
+      dir,
+      commits: 0,
+    });
+
+    expect(await git.listBranches({ fs, dir })).toHaveLength(0);
   });
 });
