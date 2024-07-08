@@ -35,14 +35,16 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
     return async () => {
       await fs.writeFile(
         path.join(dir, command["create file"].file),
-        command["create file"].content
+        command["create file"].content,
+        "utf-8"
       );
     };
   } else if ("append content" in command) {
     return async () => {
       await fs.appendFile(
         path.join(dir, command["append content"].file),
-        command["append content"].content
+        `${command["append content"].newLine ? "\n" : ""}${command["append content"].content}`,
+        "utf-8"
       );
     };
   }

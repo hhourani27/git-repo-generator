@@ -1,10 +1,6 @@
 import { Command } from "./command";
 import { toCommandImpl } from "./commandImpl";
 
-export function helloWorld(): string {
-  return "Hello, world!";
-}
-
 export async function generateGitRepo({
   dir,
   commits,
@@ -20,7 +16,11 @@ export async function generateGitRepo({
       commands.push({ "create file": { file: "test.txt", content: "line 1" } });
     } else {
       commands.push({
-        "append content": { file: "test.txt", content: `line ${i + 1}` },
+        "append content": {
+          file: "test.txt",
+          content: `line ${i + 1}`,
+          newLine: true,
+        },
       });
     }
 

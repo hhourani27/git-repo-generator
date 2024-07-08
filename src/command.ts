@@ -20,8 +20,8 @@ export type CreateFileCommand = {
   "create file": { file: string; content: string };
 };
 
-export type AppendLineCommand = {
-  "append content": { file: string; content: string };
+export type AppendContentCommand = {
+  "append content": { file: string; content: string; newLine: boolean };
 };
 
 export type Command =
@@ -29,4 +29,4 @@ export type Command =
   | AddCommand
   | CommitCommand
   | CreateFileCommand
-  | AppendLineCommand;
+  | AppendContentCommand;
