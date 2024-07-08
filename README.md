@@ -1,6 +1,6 @@
 # git-repo-generator
 
-A CLI tool to generate Git repositories with specific configuration and commit histories, to easily test your Git tools and workflows with this CLI tool.
+A CLI tool to generate Git repositories with specific configuration and commit histories, to easily test your Git tools and workflows.
 
 ## Quick Start
 
