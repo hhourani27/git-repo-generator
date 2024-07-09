@@ -30,8 +30,8 @@ if (options.file) {
 
   generateGitRepo(options.dir, gitConf);
 
-  console.log("YAML FILE");
-  console.log(JSON.stringify(gitConf, null, 2));
+  // console.log("YAML FILE");
+  // console.log(JSON.stringify(gitConf, null, 2));
 } else {
   generateGitRepo(options.dir, { commits: options.commits });
 }
