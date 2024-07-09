@@ -8,7 +8,7 @@ import {
 } from "./command";
 
 export type InitEvent = "init" | InitCommand;
-export type AddEvent = AddCommand;
+export type AddEvent = "add" | AddCommand;
 export type CommitEvent = CommitCommand;
 export type CreateFileEvent = CreateFileCommand;
 export type AppendContentEvent = AppendContentCommand;
@@ -32,6 +32,8 @@ export function confToCommands(conf: GitConf): Command[] {
   for (const command of log) {
     if (command === "init") {
       commands.push({ init: { defaultBranch: "main" } });
+    } else if (command === "add") {
+      commands.push({ add: { all: true } });
     } else {
       commands.push(command);
     }

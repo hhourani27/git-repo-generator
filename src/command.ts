@@ -3,7 +3,7 @@ export type InitCommand = {
 };
 
 export type AddCommand = {
-  add: { file: string };
+  add: { file: string } | { all: true };
 };
 
 export type CommitCommand = {

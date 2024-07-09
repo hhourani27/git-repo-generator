@@ -19,9 +19,26 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
       });
     };
   } else if ("add" in command) {
-    return async () => {
-      await git.add({ fs, dir, filepath: command.add.file });
-    };
+    const { add } = command;
+    if ("all" in add) {
+      return async () => {
+        await git
+          .statusMatrix({ fs, dir })
+          .then((status) =>
+            Promise.all(
+              status.map(([filepath, , worktreeStatus]) =>
+                worktreeStatus
+                  ? git.add({ fs, dir, filepath })
+                  : git.remove({ fs, dir, filepath })
+              )
+            )
+          );
+      };
+    } else {
+      return async () => {
+        await git.add({ fs, dir, filepath: add.file });
+      };
+    }
   } else if ("commit" in command) {
     return async () => {
       await git.commit({
