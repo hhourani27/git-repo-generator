@@ -14,6 +14,12 @@ export type CommitCommand = {
   };
 };
 
+export type CreateBranchCommand = {
+  branch: {
+    name: string;
+  };
+};
+
 export type CreateFileCommand = {
   "create file": { file: string; content: string };
 };
@@ -26,5 +32,6 @@ export type Command =
   | InitCommand
   | AddCommand
   | CommitCommand
+  | CreateBranchCommand
   | CreateFileCommand
   | AppendContentCommand;

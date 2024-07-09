@@ -59,6 +59,10 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         "utf-8"
       );
     };
+  } else if ("branch" in command) {
+    return async () => {
+      await git.branch({ fs, dir, ref: command.branch.name });
+    };
   } else if ("append content" in command) {
     return async () => {
       await fs.appendFile(

@@ -24,12 +24,12 @@ o--o--o  main
 npx git-repo-generator --dir repo-test --commits 5
 ```
 
-| Option                 | Description                                                                                            |
-| ---------------------- | ------------------------------------------------------------------------------------------------------ |
-| `-d` <br/> `--dir`     | Directory of Git repository (default: `.` current directory )                                          |
-| `-c` <br/> `--commits` | Number of commits (default: 3) <br/> Ignore if `--file` is provided (see [below](#configuration-file)) |
-| `-f` <br/> `--file`    | Configuration file                                                                                     |
-| `-h` <br/> `--help`    | Display command doc                                                                                    |
+| Option                 | Description                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------- |
+| `-d` <br/> `--dir`     | Directory of Git repository (default: `.` current directory )                                           |
+| `-c` <br/> `--commits` | Number of commits (default: 3) <br/> Ignored if `--file` is provided (see [below](#configuration-file)) |
+| `-f` <br/> `--file`    | Configuration file (see [below](#configuration-file))                                                   |
+| `-h` <br/> `--help`    | Display command doc                                                                                     |
 
 ## Configuration file
 
@@ -47,11 +47,12 @@ log:
   - create file test.txt
   - add
   - commit
+  - branch develop
 ```
 
 will generate a Git repository with
 
-- A `main` branch
+- 2 branches: `main` and `develop`
 - A `test.txt` file
 - 1 commit
 
@@ -72,6 +73,7 @@ log:
       message: first commit
       name: user1
       email: user1@example.com
+  - branch develop
 ```
 
 #### Configuration file commands
@@ -81,7 +83,8 @@ log:
 | Init repository | <pre>- init</pre> <pre>- init:<br>&nbsp;&nbsp;&nbsp;defaultBranch: master</pre>                                                                               | If not specified, initial branch is `main`                                                                            |
 | Add (stage)     | <pre>- add</pre> <pre>- add:<br>&nbsp;&nbsp;&nbsp;file: test.txt</pre> <pre>- add:<br>&nbsp;&nbsp;&nbsp;all: true</pre>                                       | `- add` is equivalent to `git add --all`                                                                              |
 | Commit          | <pre>- commit</pre> <pre>- commit:<br>&nbsp;&nbsp;&nbsp;message: first commit<br>&nbsp;&nbsp;&nbsp;name: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre> | If not specified: <br> - `message = "commit <#>"` <br> - `name = "user-test"`<br> - `email = "user-test@example.com"` |
-| Create file     | <pre>- create file test.txt</pre> <pre>- create file:<br>&nbsp;&nbsp;&nbsp;file: tets.txt<br>&nbsp;&nbsp;&nbsp;content: file content</pre>                    | If not specified: <br> - `content = <file name>`                                                                      |
+| Create branch   | <pre>- branch develop</pre>                                                                                                                                   |                                                                                                                       |
+| Create file     | <pre>- create file test.txt</pre> <pre>- create file:<br>&nbsp;&nbsp;&nbsp;file: test.txt<br>&nbsp;&nbsp;&nbsp;content: file content</pre>                    | If not specified: <br> - `content = <file name>`                                                                      |
 
 ## License
 
@@ -90,7 +93,3 @@ log:
 ## Acknowledgements
 
 - [isomorphic-git](https://github.com/isomorphic-git/isomorphic-git): for working with Git repositories (Great project. Check it out!)
-
-```
-
-```

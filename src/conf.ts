@@ -15,6 +15,7 @@ export type AddEvent = "add" | AddCommand;
 export type CommitEvent =
   | "commit"
   | { commit: { message?: string; name?: string; email?: string } };
+export type BranchEvent = WithPrefix<"branch">;
 export type CreateFileEvent =
   | WithPrefix<"create file">
   | { "create file": { file: string; content?: string } };
@@ -24,6 +25,7 @@ export type Event =
   | InitEvent
   | AddEvent
   | CommitEvent
+  | BranchEvent
   | CreateFileEvent
   | AppendContentEvent;
 
@@ -46,6 +48,10 @@ const isCommitEvent = (e: Event): e is CommitEvent => {
     (typeof e === "string" && e === "commit") ||
     (typeof e === "object" && "commit" in e)
   );
+};
+
+const isBranchEvent = (e: Event): e is BranchEvent => {
+  return typeof e === "string" && e.startsWith("branch");
 };
 
 const isCreateFileEvent = (e: Event): e is CreateFileEvent => {
@@ -100,6 +106,12 @@ export function confToCommands(conf: GitConf): Command[] {
         });
       }
       commitCounter++;
+    } else if (isBranchEvent(event)) {
+      const branchName = event.substring("branch".length).trim();
+      if (branchName === "") {
+        throw new EventLogError(`"branch": missing branch name`, i + 1);
+      }
+      commands.push({ branch: { name: branchName } });
     } else if (isCreateFileEvent(event)) {
       if (typeof event === "string") {
         const fileName = event.substring("create file".length).trim();
