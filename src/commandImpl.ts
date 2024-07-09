@@ -28,7 +28,10 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         fs,
         dir,
         message: command.commit.message,
-        author: command.commit.author,
+        author: {
+          name: command.commit.name,
+          email: command.commit.email,
+        },
       });
     };
   } else if ("create file" in command) {

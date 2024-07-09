@@ -9,10 +9,8 @@ export type AddCommand = {
 export type CommitCommand = {
   commit: {
     message: string;
-    author: {
-      name: string;
-      email: string;
-    };
+    name: string;
+    email: string;
   };
 };
 
