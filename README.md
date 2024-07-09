@@ -48,6 +48,7 @@ log:
   - add
   - commit
   - branch develop
+  - checkout develop
 ```
 
 will generate a Git repository with
@@ -74,6 +75,7 @@ log:
       name: user1
       email: user1@example.com
   - branch develop
+  - checkout develop
 ```
 
 #### Configuration file commands
@@ -83,7 +85,8 @@ log:
 | Init repository | <pre>- init</pre> <pre>- init:<br>&nbsp;&nbsp;&nbsp;defaultBranch: master</pre>                                                                               | If not specified, initial branch is `main`                                                                            |
 | Add (stage)     | <pre>- add</pre> <pre>- add:<br>&nbsp;&nbsp;&nbsp;file: test.txt</pre> <pre>- add:<br>&nbsp;&nbsp;&nbsp;all: true</pre>                                       | `- add` is equivalent to `git add --all`                                                                              |
 | Commit          | <pre>- commit</pre> <pre>- commit:<br>&nbsp;&nbsp;&nbsp;message: first commit<br>&nbsp;&nbsp;&nbsp;name: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre> | If not specified: <br> - `message = "commit <#>"` <br> - `name = "user-test"`<br> - `email = "user-test@example.com"` |
-| Create branch   | <pre>- branch develop</pre>                                                                                                                                   |                                                                                                                       |
+| Create branch   | <pre>- branch develop</pre>                                                                                                                                   |
+| Checkout        | <pre>- checkout develop</pre>                                                                                                                                 |
 | Create file     | <pre>- create file test.txt</pre> <pre>- create file:<br>&nbsp;&nbsp;&nbsp;file: test.txt<br>&nbsp;&nbsp;&nbsp;content: file content</pre>                    | If not specified: <br> - `content = <file name>`                                                                      |
 
 ## License

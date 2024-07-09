@@ -20,6 +20,12 @@ export type CreateBranchCommand = {
   };
 };
 
+export type CheckoutCommand = {
+  checkout: {
+    ref: string;
+  };
+};
+
 export type CreateFileCommand = {
   "create file": { file: string; content: string };
 };
@@ -33,5 +39,6 @@ export type Command =
   | AddCommand
   | CommitCommand
   | CreateBranchCommand
+  | CheckoutCommand
   | CreateFileCommand
   | AppendContentCommand;

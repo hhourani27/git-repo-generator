@@ -63,6 +63,10 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
     return async () => {
       await git.branch({ fs, dir, ref: command.branch.name });
     };
+  } else if ("checkout" in command) {
+    return async () => {
+      await git.checkout({ fs, dir, ref: command.checkout.ref });
+    };
   } else if ("append content" in command) {
     return async () => {
       await fs.appendFile(

@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import git from "isomorphic-git";
 import { GitConf } from "../../src/conf";
 
-describe("Branch event", () => {
+describe("Checkout event", () => {
   const dir = "/test";
 
   beforeEach(() => {
@@ -15,23 +15,33 @@ describe("Branch event", () => {
     mock.restore();
   });
 
-  test("Create branch", async () => {
+  test("Checkout", async () => {
     const conf: GitConf = {
-      log: ["init", "create file test.txt", "add", "commit", "branch branch1"],
+      log: [
+        "init",
+        "create file test.txt",
+        "add",
+        "commit",
+        "branch develop",
+        "checkout develop",
+      ],
     };
 
     await generateGitRepo(dir, conf);
 
-    expect((await git.listBranches({ fs, dir })).sort()).toEqual([
-      "branch1",
-      "main",
-    ]);
-    expect(await git.currentBranch({ fs, dir })).toEqual("main");
+    expect(await git.currentBranch({ fs, dir })).toEqual("develop");
   });
 
-  test("Missing branch name", async () => {
+  test("Missing ref", async () => {
     const conf: GitConf = {
-      log: ["init", "create file test.txt", "add", "commit", "branch "],
+      log: [
+        "init",
+        "create file test.txt",
+        "add",
+        "commit",
+        "branch develop",
+        "checkout",
+      ],
     };
 
     expect.assertions(1);
@@ -39,7 +49,7 @@ describe("Branch event", () => {
       await generateGitRepo(dir, conf);
     } catch (error) {
       expect((error as Error).message).toMatch(
-        `line 5: "branch": missing branch name`
+        `line 6: "checkout": missing ref`
       );
     }
   });
