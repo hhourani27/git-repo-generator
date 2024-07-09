@@ -12,7 +12,9 @@ type WithPrefix<T extends string> = `${T}${string}`;
 
 export type InitEvent = "init" | InitCommand;
 export type AddEvent = "add" | AddCommand;
-export type CommitEvent = CommitCommand;
+export type CommitEvent =
+  | "commit"
+  | { commit: { message?: string; name?: string; email?: string } };
 export type CreateFileEvent =
   | WithPrefix<"create file">
   | { "create file": { file: string; content?: string } };
@@ -39,6 +41,13 @@ const isAddEvent = (e: Event): e is AddEvent => {
   );
 };
 
+const isCommitEvent = (e: Event): e is CommitEvent => {
+  return (
+    (typeof e === "string" && e === "commit") ||
+    (typeof e === "object" && "commit" in e)
+  );
+};
+
 const isCreateFileEvent = (e: Event): e is CreateFileEvent => {
   return (
     (typeof e === "string" && e.startsWith("create file")) ||
@@ -55,6 +64,8 @@ export function confToCommands(conf: GitConf): Command[] {
 
   const commands: Command[] = [];
 
+  let commitCounter = 0;
+
   for (let i = 0; i < conf.log.length; i++) {
     const event = conf.log[i];
 
@@ -70,6 +81,25 @@ export function confToCommands(conf: GitConf): Command[] {
       } else {
         commands.push(event);
       }
+    } else if (isCommitEvent(event)) {
+      if (event === "commit") {
+        commands.push({
+          commit: {
+            message: `commit ${commitCounter + 1}`,
+            name: "user-test",
+            email: "user-test@example.com",
+          },
+        });
+      } else {
+        commands.push({
+          commit: {
+            message: event.commit.message ?? `commit ${commitCounter + 1}`,
+            name: event.commit.name ?? "user-test",
+            email: event.commit.email ?? "user-test@example.com",
+          },
+        });
+      }
+      commitCounter++;
     } else if (isCreateFileEvent(event)) {
       if (typeof event === "string") {
         const fileName = event.substring("create file".length).trim();
