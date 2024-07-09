@@ -1,6 +1,7 @@
 import {
   AddCommand,
   AppendContentCommand,
+  Command,
   CommitCommand,
   CreateFileCommand,
   InitCommand,
@@ -22,3 +23,9 @@ export type Event =
 export type GitConf = {
   log: Event[];
 };
+
+export function confToCommands(conf: GitConf): Command[] {
+  const log = conf.log;
+
+  return conf.log;
+}

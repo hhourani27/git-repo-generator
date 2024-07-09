@@ -2,7 +2,7 @@ import { Command } from "./command";
 import { toCommandImpl } from "./commandImpl";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { GitConf } from "./conf";
+import { confToCommands, GitConf } from "./conf";
 
 export async function generateGitRepo(
   dir: string,
@@ -57,7 +57,8 @@ export async function generatorGitRepoFromConf(
   dir: string,
   conf: GitConf
 ): Promise<void> {
-  await executeCommands(dir, conf.log);
+  const commands = confToCommands(conf);
+  await executeCommands(dir, commands);
 }
 
 async function executeCommands(
