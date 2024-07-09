@@ -3,16 +3,14 @@ export type InitCommand = {
 };
 
 export type AddCommand = {
-  add: { file: string };
+  add: { file: string } | { all: true };
 };
 
 export type CommitCommand = {
   commit: {
     message: string;
-    author: {
-      name: string;
-      email: string;
-    };
+    name: string;
+    email: string;
   };
 };
 

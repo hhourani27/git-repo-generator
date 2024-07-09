@@ -1,14 +1,14 @@
-import { generateGitRepo } from "../src/index";
+import { generateGitRepo } from "../../src";
 import mock from "mock-fs";
 import fs from "node:fs/promises";
 import path from "node:path";
 import git from "isomorphic-git";
 
-describe("generateGitRepo", () => {
+describe("Generate from command line opts", () => {
   const dir = "/test";
 
   beforeEach(() => {
-    mock({});
+    mock({ test: {} });
   });
 
   afterEach(() => {
@@ -16,8 +16,7 @@ describe("generateGitRepo", () => {
   });
 
   test("Generate simple repo", async () => {
-    await generateGitRepo({
-      dir,
+    await generateGitRepo(dir, {
       commits: 3,
     });
 
@@ -30,11 +29,25 @@ describe("generateGitRepo", () => {
   });
 
   test("Generate simple repo with no commit", async () => {
-    await generateGitRepo({
-      dir,
+    await generateGitRepo(dir, {
       commits: 0,
     });
 
     expect(await git.listBranches({ fs, dir })).toHaveLength(0);
+  });
+
+  test("Cannot override existing git repo", async () => {
+    await fs.mkdir(path.join(dir, ".git"), { recursive: true });
+
+    expect.assertions(1);
+    try {
+      await generateGitRepo(dir, {
+        commits: 3,
+      });
+    } catch (error) {
+      expect((error as Error).message).toMatch(
+        "A Git repository already exists"
+      );
+    }
   });
 });
