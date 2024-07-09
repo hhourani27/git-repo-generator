@@ -25,4 +25,14 @@ describe("Init event", () => {
       "ref: refs/heads/main\n"
     );
   });
+
+  test("Init: no properties", async () => {
+    const conf: GitConf = { log: ["init"] };
+
+    await generateGitRepo(dir, conf);
+
+    expect(await fs.readFile(path.join(dir, ".git", "HEAD"), "utf-8")).toEqual(
+      "ref: refs/heads/main\n"
+    );
+  });
 });
