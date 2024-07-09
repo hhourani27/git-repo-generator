@@ -4,7 +4,7 @@ import fs from "node:fs/promises";
 import git from "isomorphic-git";
 import { GitConf } from "../../src/conf";
 
-describe("Init event", () => {
+describe("Add event", () => {
   const dir = "/test";
 
   beforeEach(() => {
