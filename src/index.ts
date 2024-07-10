@@ -29,13 +29,14 @@ export async function generateGitRepoFromCmdOpts(
 
   for (let i = 0; i < commits; i++) {
     if (i === 0) {
-      commands.push({ "create file": { file: "test.txt", content: "line 1" } });
+      commands.push({
+        "create file": { file: "test.txt", content: `text ${i + 1}` },
+      });
     } else {
       commands.push({
-        "append content": {
+        "change content": {
           file: "test.txt",
-          content: `line ${i + 1}`,
-          newLine: true,
+          content: `text ${i + 1}`,
         },
       });
     }

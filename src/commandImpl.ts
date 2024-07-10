@@ -108,14 +108,6 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         "utf-8"
       );
     };
-  } else if ("append content" in command) {
-    return async () => {
-      await fs.appendFile(
-        path.join(dir, command["append content"].file),
-        `${command["append content"].newLine ? "\n" : ""}${command["append content"].content}`,
-        "utf-8"
-      );
-    };
   }
 
   throw new Error(`Invalid command: ${JSON.stringify(command)}`);

@@ -1,5 +1,4 @@
 import {
-  AppendContentCommand,
   ChangeContentCommand,
   Command,
   CommitCommand,
@@ -30,7 +29,6 @@ export type CreateFileEvent =
   | WithPrefix<"create file">
   | { "create file": { file: string; content?: string } };
 export type ChangeContentEvent = ChangeContentCommand;
-export type AppendContentEvent = AppendContentCommand;
 
 export type Event =
   | InitEvent
@@ -40,8 +38,7 @@ export type Event =
   | MergeEvent
   | TagEvent
   | CreateFileEvent
-  | ChangeContentEvent
-  | AppendContentEvent;
+  | ChangeContentEvent;
 
 const isInitEvent = (e: Event): e is InitEvent => {
   return (
@@ -103,8 +100,8 @@ export function confToCommands(conf: GitConf): Command[] {
 
   let commitCounter = 0;
 
-  for (let i = 0; i < conf.log.length; i++) {
-    const event = conf.log[i];
+  for (let i = 0; i < log.length; i++) {
+    const event = log[i];
 
     if (isInitEvent(event)) {
       if (event === "init") {

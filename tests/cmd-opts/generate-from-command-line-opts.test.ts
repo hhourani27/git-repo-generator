@@ -24,7 +24,7 @@ describe("Generate from command line opts", () => {
     expect(await git.listBranches({ fs, dir })).toEqual(["main"]);
     expect(await fs.readdir(dir)).toEqual([".git", "test.txt"]);
     expect(await fs.readFile(path.join(dir, "test.txt"), "utf-8")).toEqual(
-      "line 1\nline 2\nline 3"
+      "text 3"
     );
   });
 

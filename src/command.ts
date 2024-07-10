@@ -45,10 +45,6 @@ export type ChangeContentCommand = {
   "change content": { file: string; content: string };
 };
 
-export type AppendContentCommand = {
-  "append content": { file: string; content: string; newLine: boolean };
-};
-
 export type Command =
   | InitCommand
   | CommitCommand
@@ -57,5 +53,4 @@ export type Command =
   | MergeCommand
   | TagCommand
   | CreateFileCommand
-  | ChangeContentCommand
-  | AppendContentCommand;
+  | ChangeContentCommand;
