@@ -70,7 +70,7 @@ describe("Merge", () => {
           merge: {
             theirs: "develop",
             message: "a merge commit",
-            name: "user1",
+            author: "user1",
             email: "user1@ex.com",
           },
         },
@@ -115,7 +115,7 @@ describe("Merge", () => {
         {
           merge: {
             theirs: "develop",
-            name: "user1",
+            author: "user1",
             email: "user1@ex.com",
           },
         },

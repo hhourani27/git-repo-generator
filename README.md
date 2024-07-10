@@ -73,7 +73,7 @@ log:
       content: line 1
   - commit:
       message: first commit
-      name: user1
+      author: user1
       email: user1@example.com
   - branch develop
   - checkout develop
@@ -87,21 +87,21 @@ log:
   - merge:
       theirs: develop
       message: merge commit
-      name: user1
+      author: user1
       email: user1@example.com
 ```
 
 #### Configuration file commands
 
-| Command         | Expressions                                                                                                                                                                                                 | Notes                                                                                                                                                                                                                                          |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Init repository | <pre>- init</pre> <pre>- init:<br>&nbsp;&nbsp;&nbsp;defaultBranch: master</pre>                                                                                                                             | If omitted: <br> - `defaultBranch = "main"`                                                                                                                                                                                                    |
-| Commit          | <pre>- commit</pre> <pre>- commit:<br>&nbsp;&nbsp;&nbsp;message: first commit<br>&nbsp;&nbsp;&nbsp;name: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre>                                               | Equivalent of `git add -a & git commit` (stage all changes in the working dir before committing)<br><br> If omitted: <br> - `message = "commit <#>"` <br> - `name = "user-test"`<br> - `email = "user-test@example.com"`                       |
-| Create branch   | <pre>- branch develop</pre>                                                                                                                                                                                 |
-| Checkout        | <pre>- checkout develop</pre>                                                                                                                                                                               |
-| Merge           | <pre>- merge develop</pre> <pre>- merge:<br>&nbsp;&nbsp;&nbsp;theirs: develop<br>&nbsp;&nbsp;&nbsp;message: my merge commit<br>&nbsp;&nbsp;&nbsp;name: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre> | If omitted: <br> - `message = "merge branch <theirs>"` <br> - `name = "user-test"`<br> - `email = "user-test@example.com"`<br><br> Merges never fast-forward<br><br> Merge conflicts are auto-resolved cleanly by favoring the "theirs" branch |
-| Create file     | <pre>- create file test.txt</pre> <pre>- create file:<br>&nbsp;&nbsp;&nbsp;file: test.txt<br>&nbsp;&nbsp;&nbsp;content: file content</pre>                                                                  | If omitted: <br> - `content = <file name>`                                                                                                                                                                                                     |
-| Change content  | <pre>- change content:<br>&nbsp;&nbsp;&nbsp;file: test.txt<br>&nbsp;&nbsp;&nbsp;content: new file content</pre>                                                                                             |                                                                                                                                                                                                                                                |
+| Command         | Expressions                                                                                                                                                                                                   | Notes                                                                                                                                                                                                                                            |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Init repository | <pre>- init</pre> <pre>- init:<br>&nbsp;&nbsp;&nbsp;defaultBranch: master</pre>                                                                                                                               | If omitted: <br> - `defaultBranch = "main"`                                                                                                                                                                                                      |
+| Commit          | <pre>- commit</pre> <pre>- commit:<br>&nbsp;&nbsp;&nbsp;message: first commit<br>&nbsp;&nbsp;&nbsp;author: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre>                                               | Equivalent of `git add -a & git commit` (stage all changes in the working dir before committing)<br><br> If omitted: <br> - `message = "commit <#>"` <br> - `author = "user-test"`<br> - `email = "user-test@example.com"`                       |
+| Create branch   | <pre>- branch develop</pre>                                                                                                                                                                                   |
+| Checkout        | <pre>- checkout develop</pre>                                                                                                                                                                                 |
+| Merge           | <pre>- merge develop</pre> <pre>- merge:<br>&nbsp;&nbsp;&nbsp;theirs: develop<br>&nbsp;&nbsp;&nbsp;message: my merge commit<br>&nbsp;&nbsp;&nbsp;author: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre> | If omitted: <br> - `message = "merge branch <theirs>"` <br> - `author = "user-test"`<br> - `email = "user-test@example.com"`<br><br> Merges never fast-forward<br><br> Merge conflicts are auto-resolved cleanly by favoring the "theirs" branch |
+| Create file     | <pre>- create file test.txt</pre> <pre>- create file:<br>&nbsp;&nbsp;&nbsp;file: test.txt<br>&nbsp;&nbsp;&nbsp;content: file content</pre>                                                                    | If omitted: <br> - `content = <file name>`                                                                                                                                                                                                       |
+| Change content  | <pre>- change content:<br>&nbsp;&nbsp;&nbsp;file: test.txt<br>&nbsp;&nbsp;&nbsp;content: new file content</pre>                                                                                               |                                                                                                                                                                                                                                                  |
 
 ## License
 

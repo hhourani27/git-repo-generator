@@ -38,7 +38,7 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         dir,
         message: command.commit.message,
         author: {
-          name: command.commit.name,
+          name: command.commit.author,
           email: command.commit.email,
         },
       });
@@ -67,7 +67,7 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         theirs: command.merge.theirs,
         message: command.merge.message,
         author: {
-          name: command.merge.name,
+          name: command.merge.author,
           email: command.merge.email,
         },
         fastForward: false,

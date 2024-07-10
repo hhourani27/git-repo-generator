@@ -13,7 +13,7 @@ type WithPrefix<T extends string> = `${T}${string}`;
 export type InitEvent = "init" | InitCommand;
 export type CommitEvent =
   | "commit"
-  | { commit: { message?: string; name?: string; email?: string } };
+  | { commit: { message?: string; author?: string; email?: string } };
 export type BranchEvent = WithPrefix<"branch">;
 export type CheckoutEvent = WithPrefix<"checkout">;
 export type MergeEvent =
@@ -22,7 +22,7 @@ export type MergeEvent =
       merge: {
         theirs: string;
         message?: string;
-        name?: string;
+        author?: string;
         email?: string;
       };
     };
@@ -114,7 +114,7 @@ export function confToCommands(conf: GitConf): Command[] {
         commands.push({
           commit: {
             message: `commit ${commitCounter + 1}`,
-            name: "user-test",
+            author: "user-test",
             email: "user-test@example.com",
           },
         });
@@ -122,7 +122,7 @@ export function confToCommands(conf: GitConf): Command[] {
         commands.push({
           commit: {
             message: event.commit.message ?? `commit ${commitCounter + 1}`,
-            name: event.commit.name ?? "user-test",
+            author: event.commit.author ?? "user-test",
             email: event.commit.email ?? "user-test@example.com",
           },
         });
@@ -150,7 +150,7 @@ export function confToCommands(conf: GitConf): Command[] {
           merge: {
             theirs,
             message: `merge branch ${theirs}`,
-            name: "user-test",
+            author: "user-test",
             email: "user-test@example.com",
           },
         });
@@ -160,7 +160,7 @@ export function confToCommands(conf: GitConf): Command[] {
             theirs: event.merge.theirs,
             message:
               event.merge.message ?? `merge branch ${event.merge.theirs}`,
-            name: event.merge.name ?? "user-test",
+            author: event.merge.author ?? "user-test",
             email: event.merge.email ?? "user-test@example.com",
           },
         });

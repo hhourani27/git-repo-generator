@@ -5,7 +5,7 @@ export type InitCommand = {
 export type CommitCommand = {
   commit: {
     message: string;
-    name: string;
+    author: string;
     email: string;
   };
 };
@@ -26,7 +26,7 @@ export type MergeCommand = {
   merge: {
     theirs: string;
     message: string;
-    name: string;
+    author: string;
     email: string;
   };
 };
