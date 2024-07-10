@@ -21,12 +21,10 @@ describe("Merge", () => {
       log: [
         "init",
         "create file test-main.txt",
-        "add",
         "commit",
         "branch develop",
         "checkout develop",
         "create file test-develop.txt",
-        "add",
         "commit",
         "checkout main",
         "merge develop",
@@ -62,12 +60,10 @@ describe("Merge", () => {
       log: [
         "init",
         "create file test-main.txt",
-        "add",
         "commit",
         "branch develop",
         "checkout develop",
         "create file test-develop.txt",
-        "add",
         "commit",
         "checkout main",
         {
@@ -110,12 +106,10 @@ describe("Merge", () => {
       log: [
         "init",
         "create file test-main.txt",
-        "add",
         "commit",
         "branch develop",
         "checkout develop",
         "create file test-develop.txt",
-        "add",
         "commit",
         "checkout main",
         {
@@ -157,12 +151,10 @@ describe("Merge", () => {
       log: [
         "init",
         "create file test-main.txt",
-        "add",
         "commit",
         "branch develop",
         "checkout develop",
         "create file test-develop.txt",
-        "add",
         "commit",
         "checkout main",
         {
@@ -203,12 +195,10 @@ describe("Merge", () => {
       log: [
         "init",
         { "create file": { file: "test.txt", content: "line 1" } },
-        "add",
         "commit",
         "branch develop",
         "checkout develop",
         { "change content": { file: "test.txt", content: "line 1\nline 2" } },
-        "add",
         "commit",
         "checkout main",
         "merge develop",
@@ -240,12 +230,10 @@ describe("Merge", () => {
       log: [
         "init",
         { "create file": { file: "test.txt", content: "line 1" } },
-        "add",
         "commit",
         "branch develop",
         "checkout develop",
         { "change content": { file: "test.txt", content: "line 2" } },
-        "add",
         "commit",
         "checkout main",
         "merge develop",

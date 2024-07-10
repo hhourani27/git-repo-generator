@@ -20,7 +20,6 @@ describe("Checkout event", () => {
       log: [
         "init",
         "create file test.txt",
-        "add",
         "commit",
         "branch develop",
         "checkout develop",
@@ -37,7 +36,6 @@ describe("Checkout event", () => {
       log: [
         "init",
         "create file test.txt",
-        "add",
         "commit",
         "branch develop",
         "checkout",
@@ -49,7 +47,7 @@ describe("Checkout event", () => {
       await generateGitRepo(dir, conf);
     } catch (error) {
       expect((error as Error).message).toMatch(
-        `line 6: "checkout": missing ref`
+        `line 5: "checkout": missing ref`
       );
     }
   });

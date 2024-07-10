@@ -2,10 +2,6 @@ export type InitCommand = {
   init: { defaultBranch: string };
 };
 
-export type AddCommand = {
-  add: { file: string } | { all: true };
-};
-
 export type CommitCommand = {
   commit: {
     message: string;
@@ -49,7 +45,6 @@ export type AppendContentCommand = {
 
 export type Command =
   | InitCommand
-  | AddCommand
   | CommitCommand
   | CreateBranchCommand
   | CheckoutCommand

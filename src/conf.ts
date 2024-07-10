@@ -1,5 +1,4 @@
 import {
-  AddCommand,
   AppendContentCommand,
   ChangeContentCommand,
   Command,
@@ -12,7 +11,6 @@ import { EventLogError } from "./errors/EventLogError";
 type WithPrefix<T extends string> = `${T}${string}`;
 
 export type InitEvent = "init" | InitCommand;
-export type AddEvent = "add" | AddCommand;
 export type CommitEvent =
   | "commit"
   | { commit: { message?: string; name?: string; email?: string } };
@@ -37,7 +35,6 @@ export type AppendContentEvent = AppendContentCommand;
 
 export type Event =
   | InitEvent
-  | AddEvent
   | CommitEvent
   | BranchEvent
   | CheckoutEvent
@@ -50,13 +47,6 @@ const isInitEvent = (e: Event): e is InitEvent => {
   return (
     (typeof e === "string" && e === "init") ||
     (typeof e === "object" && "init" in e)
-  );
-};
-
-const isAddEvent = (e: Event): e is AddEvent => {
-  return (
-    (typeof e === "string" && e === "add") ||
-    (typeof e === "object" && "add" in e)
   );
 };
 
@@ -110,12 +100,6 @@ export function confToCommands(conf: GitConf): Command[] {
     if (isInitEvent(event)) {
       if (event === "init") {
         commands.push({ init: { defaultBranch: "main" } });
-      } else {
-        commands.push(event);
-      }
-    } else if (isAddEvent(event)) {
-      if (event === "add") {
-        commands.push({ add: { all: true } });
       } else {
         commands.push(event);
       }

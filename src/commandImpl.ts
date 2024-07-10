@@ -18,29 +18,21 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         defaultBranch: command.init.defaultBranch,
       });
     };
-  } else if ("add" in command) {
-    const { add } = command;
-    if ("all" in add) {
-      return async () => {
-        await git
-          .statusMatrix({ fs, dir })
-          .then((status) =>
-            Promise.all(
-              status.map(([filepath, , worktreeStatus]) =>
-                worktreeStatus
-                  ? git.add({ fs, dir, filepath })
-                  : git.remove({ fs, dir, filepath })
-              )
-            )
-          );
-      };
-    } else {
-      return async () => {
-        await git.add({ fs, dir, filepath: add.file });
-      };
-    }
   } else if ("commit" in command) {
     return async () => {
+      // git add .
+      await git
+        .statusMatrix({ fs, dir })
+        .then((status) =>
+          Promise.all(
+            status.map(([filepath, , worktreeStatus]) =>
+              worktreeStatus
+                ? git.add({ fs, dir, filepath })
+                : git.remove({ fs, dir, filepath })
+            )
+          )
+        );
+      // git commit
       await git.commit({
         fs,
         dir,

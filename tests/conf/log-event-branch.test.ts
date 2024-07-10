@@ -17,7 +17,7 @@ describe("Branch event", () => {
 
   test("Create branch", async () => {
     const conf: GitConf = {
-      log: ["init", "create file test.txt", "add", "commit", "branch branch1"],
+      log: ["init", "create file test.txt", "commit", "branch branch1"],
     };
 
     await generateGitRepo(dir, conf);
@@ -31,7 +31,7 @@ describe("Branch event", () => {
 
   test("Missing branch name", async () => {
     const conf: GitConf = {
-      log: ["init", "create file test.txt", "add", "commit", "branch "],
+      log: ["init", "create file test.txt", "commit", "branch "],
     };
 
     expect.assertions(1);
@@ -39,7 +39,7 @@ describe("Branch event", () => {
       await generateGitRepo(dir, conf);
     } catch (error) {
       expect((error as Error).message).toMatch(
-        `line 5: "branch": missing branch name`
+        `line 4: "branch": missing branch name`
       );
     }
   });

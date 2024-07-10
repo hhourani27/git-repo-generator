@@ -20,7 +20,6 @@ describe("Commit", () => {
       log: [
         "init",
         "create file test.txt",
-        "add",
         {
           commit: {
             message: "commit message",
@@ -47,7 +46,6 @@ describe("Commit", () => {
       log: [
         "init",
         "create file test.txt",
-        "add",
         {
           commit: {
             name: "user1",
@@ -73,7 +71,6 @@ describe("Commit", () => {
       log: [
         "init",
         "create file test.txt",
-        "add",
         {
           commit: {
             message: "commit message",
@@ -95,7 +92,7 @@ describe("Commit", () => {
 
   test("Commit: no properties", async () => {
     const conf: GitConf = {
-      log: ["init", "create file test.txt", "add", "commit"],
+      log: ["init", "create file test.txt", "commit"],
     };
 
     await generateGitRepo(dir, conf);

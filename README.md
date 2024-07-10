@@ -45,12 +45,10 @@ npx git-repo-generator -d repo-test -f git.yaml
 log:
   - init
   - create file test.txt
-  - add
   - commit
   - branch develop
   - checkout develop
   - create file test2.txt
-  - add
   - commit
   - checkout main
   - merge develop
@@ -73,8 +71,6 @@ log:
   - create file:
       file: test.txt
       content: line 1
-  - add:
-      file: test.txt
   - commit:
       message: first commit
       name: user1
@@ -86,7 +82,6 @@ log:
       content: |
         line 1
         line 2
-  - add
   - commit
   - checkout main
   - merge:
@@ -101,8 +96,7 @@ log:
 | Command         | Expressions                                                                                                                                                                                                 | Notes                                                                                                                                                                                                                                          |
 | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Init repository | <pre>- init</pre> <pre>- init:<br>&nbsp;&nbsp;&nbsp;defaultBranch: master</pre>                                                                                                                             | If omitted: <br> - `defaultBranch = "main"`                                                                                                                                                                                                    |
-| Add (stage)     | <pre>- add</pre> <pre>- add:<br>&nbsp;&nbsp;&nbsp;file: test.txt</pre> <pre>- add:<br>&nbsp;&nbsp;&nbsp;all: true</pre>                                                                                     | `- add` is equivalent to `git add --all`                                                                                                                                                                                                       |
-| Commit          | <pre>- commit</pre> <pre>- commit:<br>&nbsp;&nbsp;&nbsp;message: first commit<br>&nbsp;&nbsp;&nbsp;name: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre>                                               | If omitted: <br> - `message = "commit <#>"` <br> - `name = "user-test"`<br> - `email = "user-test@example.com"`                                                                                                                                |
+| Commit          | <pre>- commit</pre> <pre>- commit:<br>&nbsp;&nbsp;&nbsp;message: first commit<br>&nbsp;&nbsp;&nbsp;name: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre>                                               | Equivalent of `git add -a & git commit` (stage all changes in the working dir before committing)<br><br> If omitted: <br> - `message = "commit <#>"` <br> - `name = "user-test"`<br> - `email = "user-test@example.com"`                       |
 | Create branch   | <pre>- branch develop</pre>                                                                                                                                                                                 |
 | Checkout        | <pre>- checkout develop</pre>                                                                                                                                                                               |
 | Merge           | <pre>- merge develop</pre> <pre>- merge:<br>&nbsp;&nbsp;&nbsp;theirs: develop<br>&nbsp;&nbsp;&nbsp;message: my merge commit<br>&nbsp;&nbsp;&nbsp;name: user1<br>&nbsp;&nbsp;&nbsp;email: user1@ex.com</pre> | If omitted: <br> - `message = "merge branch <theirs>"` <br> - `name = "user-test"`<br> - `email = "user-test@example.com"`<br><br> Merges never fast-forward<br><br> Merge conflicts are auto-resolved cleanly by favoring the "theirs" branch |

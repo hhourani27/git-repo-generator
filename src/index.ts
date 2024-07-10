@@ -40,7 +40,6 @@ export async function generateGitRepoFromCmdOpts(
       });
     }
 
-    commands.push({ add: { file: "test.txt" } });
     commands.push({
       commit: {
         message: `commit ${i + 1}`,
