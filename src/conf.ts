@@ -3,6 +3,7 @@ import {
   ChangeContentCommand,
   Command,
   CommitCommand,
+  CommitInfo,
   CreateFileCommand,
   InitCommand,
 } from "./command";
@@ -11,9 +12,7 @@ import { EventLogError } from "./errors/EventLogError";
 type WithPrefix<T extends string> = `${T}${string}`;
 
 export type InitEvent = "init" | InitCommand;
-export type CommitEvent =
-  | "commit"
-  | { commit: { message?: string; author?: string; email?: string } };
+export type CommitEvent = "commit" | { commit: Partial<CommitInfo> };
 export type BranchEvent = WithPrefix<"branch">;
 export type CheckoutEvent = WithPrefix<"checkout">;
 export type MergeEvent =
@@ -21,10 +20,7 @@ export type MergeEvent =
   | {
       merge: {
         theirs: string;
-        message?: string;
-        author?: string;
-        email?: string;
-      };
+      } & Partial<CommitInfo>;
     };
 export type TagEvent = WithPrefix<"tag">;
 
@@ -93,6 +89,8 @@ export type GitConf = {
   log: Event[];
 };
 
+const defaultUser = { author: "user-test", email: "user-test@example.com" };
+
 export function confToCommands(conf: GitConf): Command[] {
   const log = conf.log;
 
@@ -110,21 +108,17 @@ export function confToCommands(conf: GitConf): Command[] {
         commands.push(event);
       }
     } else if (isCommitEvent(event)) {
+      const defaultCommitInfo: CommitInfo = {
+        message: `commit ${commitCounter + 1}`,
+        ...defaultUser,
+      };
       if (event === "commit") {
         commands.push({
-          commit: {
-            message: `commit ${commitCounter + 1}`,
-            author: "user-test",
-            email: "user-test@example.com",
-          },
+          commit: defaultCommitInfo,
         });
       } else {
         commands.push({
-          commit: {
-            message: event.commit.message ?? `commit ${commitCounter + 1}`,
-            author: event.commit.author ?? "user-test",
-            email: event.commit.email ?? "user-test@example.com",
-          },
+          commit: Object.assign({}, defaultCommitInfo, event.commit),
         });
       }
       commitCounter++;
@@ -150,8 +144,7 @@ export function confToCommands(conf: GitConf): Command[] {
           merge: {
             theirs,
             message: `merge branch ${theirs}`,
-            author: "user-test",
-            email: "user-test@example.com",
+            ...defaultUser,
           },
         });
       } else {
@@ -160,8 +153,8 @@ export function confToCommands(conf: GitConf): Command[] {
             theirs: event.merge.theirs,
             message:
               event.merge.message ?? `merge branch ${event.merge.theirs}`,
-            author: event.merge.author ?? "user-test",
-            email: event.merge.email ?? "user-test@example.com",
+            author: event.merge.author ?? defaultUser.author,
+            email: event.merge.email ?? defaultUser.email,
           },
         });
       }

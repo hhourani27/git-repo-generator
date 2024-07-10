@@ -1,13 +1,15 @@
+export type CommitInfo = {
+  message: string;
+  author: string;
+  email: string;
+};
+
 export type InitCommand = {
   init: { defaultBranch: string };
 };
 
 export type CommitCommand = {
-  commit: {
-    message: string;
-    author: string;
-    email: string;
-  };
+  commit: CommitInfo;
 };
 
 export type CreateBranchCommand = {
@@ -25,16 +27,15 @@ export type CheckoutCommand = {
 export type MergeCommand = {
   merge: {
     theirs: string;
-    message: string;
-    author: string;
-    email: string;
-  };
+  } & CommitInfo;
 };
 
 export type TagCommand = {
-  tag: {
-    name: string;
-  };
+  // tag: {
+  //   name: string;
+  //   annotated: boolean;
+  // } & CommitInfo;
+  tag: { name: string };
 };
 
 export type CreateFileCommand = {
