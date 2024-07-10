@@ -45,11 +45,10 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
     };
   } else if ("create file" in command) {
     return async () => {
-      await fs.writeFile(
-        path.join(dir, command["create file"].file),
-        command["create file"].content,
-        "utf-8"
-      );
+      const filePath = path.join(dir, command["create file"].file);
+      // Create directories if they do not exist
+      await fs.mkdir(path.dirname(filePath), { recursive: true });
+      await fs.writeFile(filePath, command["create file"].content, "utf-8");
     };
   } else if ("branch" in command) {
     return async () => {

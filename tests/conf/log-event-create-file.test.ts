@@ -40,7 +40,7 @@ describe("Create file event", () => {
     );
   });
 
-  test("Create file: string, with file name", async () => {
+  test("Create file: shorthand", async () => {
     const conf: GitConf = {
       log: ["init", "create file test.txt"],
     };
@@ -52,7 +52,7 @@ describe("Create file event", () => {
     );
   });
 
-  test("Create file: string, with no file name", async () => {
+  test("Create file: shorthand, missing file name", async () => {
     const conf: GitConf = {
       log: ["init", "create file"],
     };
@@ -65,5 +65,17 @@ describe("Create file event", () => {
         `line 2: "create file": missing file name`
       );
     }
+  });
+
+  test("Create folder: shorthand", async () => {
+    const conf: GitConf = {
+      log: ["init", "create file src/test.txt"],
+    };
+
+    await generateGitRepo(dir, conf);
+
+    expect(await fs.readFile(path.join(dir, "src/test.txt"), "utf-8")).toEqual(
+      "src/test.txt"
+    );
   });
 });
