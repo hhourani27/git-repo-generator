@@ -1,6 +1,7 @@
 import {
   AddCommand,
   AppendContentCommand,
+  ChangeContentCommand,
   Command,
   CommitCommand,
   CreateFileCommand,
@@ -17,9 +18,21 @@ export type CommitEvent =
   | { commit: { message?: string; name?: string; email?: string } };
 export type BranchEvent = WithPrefix<"branch">;
 export type CheckoutEvent = WithPrefix<"checkout">;
+export type MergeEvent =
+  | WithPrefix<"merge">
+  | {
+      merge: {
+        theirs: string;
+        message?: string;
+        name?: string;
+        email?: string;
+      };
+    };
+
 export type CreateFileEvent =
   | WithPrefix<"create file">
   | { "create file": { file: string; content?: string } };
+export type ChangeContentEvent = ChangeContentCommand;
 export type AppendContentEvent = AppendContentCommand;
 
 export type Event =
@@ -28,7 +41,9 @@ export type Event =
   | CommitEvent
   | BranchEvent
   | CheckoutEvent
+  | MergeEvent
   | CreateFileEvent
+  | ChangeContentEvent
   | AppendContentEvent;
 
 const isInitEvent = (e: Event): e is InitEvent => {
@@ -60,11 +75,22 @@ const isCheckoutEvent = (e: Event): e is CheckoutEvent => {
   return typeof e === "string" && e.startsWith("checkout");
 };
 
+const isMergeEvent = (e: Event): e is MergeEvent => {
+  return (
+    (typeof e === "string" && e.startsWith("merge")) ||
+    (typeof e === "object" && "merge" in e)
+  );
+};
+
 const isCreateFileEvent = (e: Event): e is CreateFileEvent => {
   return (
     (typeof e === "string" && e.startsWith("create file")) ||
     (typeof e === "object" && "create file" in e)
   );
+};
+
+const isChangeContentEvent = (e: Event): e is ChangeContentEvent => {
+  return typeof e === "object" && "change content" in e;
 };
 
 export type GitConf = {
@@ -124,6 +150,32 @@ export function confToCommands(conf: GitConf): Command[] {
         throw new EventLogError(`"checkout": missing ref`, i + 1);
       }
       commands.push({ checkout: { ref } });
+    } else if (isMergeEvent(event)) {
+      if (typeof event === "string") {
+        const theirs = event.substring("merge".length).trim();
+        if (theirs === "") {
+          throw new EventLogError(`"merge": missing branch`, i + 1);
+        }
+        commands.push({
+          merge: {
+            theirs,
+            message: `merge branch ${theirs}`,
+            name: "user-test",
+            email: "user-test@example.com",
+          },
+        });
+      } else {
+        commands.push({
+          merge: {
+            theirs: event.merge.theirs,
+            message:
+              event.merge.message ?? `merge branch ${event.merge.theirs}`,
+            name: event.merge.name ?? "user-test",
+            email: event.merge.email ?? "user-test@example.com",
+          },
+        });
+      }
+      commitCounter++;
     } else if (isCreateFileEvent(event)) {
       if (typeof event === "string") {
         const fileName = event.substring("create file".length).trim();
@@ -136,6 +188,8 @@ export function confToCommands(conf: GitConf): Command[] {
         const content = event["create file"].content ?? file;
         commands.push({ "create file": { file, content } });
       }
+    } else if (isChangeContentEvent(event)) {
+      commands.push(event);
     } else {
       commands.push(event);
     }

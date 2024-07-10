@@ -67,6 +67,38 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
     return async () => {
       await git.checkout({ fs, dir, ref: command.checkout.ref });
     };
+  } else if ("merge" in command) {
+    return async () => {
+      await git.merge({
+        fs,
+        dir,
+        theirs: command.merge.theirs,
+        message: command.merge.message,
+        author: {
+          name: command.merge.name,
+          email: command.merge.email,
+        },
+        fastForward: false,
+        mergeDriver: ({ contents }) => {
+          const mergedText = contents[2];
+          return { cleanMerge: true, mergedText };
+        },
+      });
+
+      await git.checkout({
+        fs,
+        dir,
+        ref: (await git.currentBranch({ fs, dir })) as string,
+      });
+    };
+  } else if ("change content" in command) {
+    return async () => {
+      await fs.writeFile(
+        path.join(dir, command["change content"].file),
+        command["change content"].content,
+        "utf-8"
+      );
+    };
   } else if ("append content" in command) {
     return async () => {
       await fs.appendFile(

@@ -26,8 +26,21 @@ export type CheckoutCommand = {
   };
 };
 
+export type MergeCommand = {
+  merge: {
+    theirs: string;
+    message: string;
+    name: string;
+    email: string;
+  };
+};
+
 export type CreateFileCommand = {
   "create file": { file: string; content: string };
+};
+
+export type ChangeContentCommand = {
+  "change content": { file: string; content: string };
 };
 
 export type AppendContentCommand = {
@@ -40,5 +53,7 @@ export type Command =
   | CommitCommand
   | CreateBranchCommand
   | CheckoutCommand
+  | MergeCommand
   | CreateFileCommand
+  | ChangeContentCommand
   | AppendContentCommand;
