@@ -31,11 +31,10 @@ export type MergeCommand = {
 };
 
 export type TagCommand = {
-  // tag: {
-  //   name: string;
-  //   annotated: boolean;
-  // } & CommitInfo;
-  tag: { name: string };
+  tag: {
+    name: string;
+    annotated: boolean;
+  } & CommitInfo;
 };
 
 export type CreateFileCommand = {

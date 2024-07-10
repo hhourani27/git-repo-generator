@@ -22,7 +22,9 @@ export type MergeEvent =
         theirs: string;
       } & Partial<CommitInfo>;
     };
-export type TagEvent = WithPrefix<"tag">;
+export type TagEvent =
+  | WithPrefix<"tag">
+  | { tag: { name: string; annotated?: boolean } & Partial<CommitInfo> };
 
 export type CreateFileEvent =
   | WithPrefix<"create file">
@@ -71,7 +73,10 @@ const isMergeEvent = (e: Event): e is MergeEvent => {
 };
 
 const isTagEvent = (e: Event): e is TagEvent => {
-  return typeof e === "string" && e.startsWith("tag");
+  return (
+    (typeof e === "string" && e.startsWith("tag")) ||
+    (typeof e === "object" && "tag" in e)
+  );
 };
 
 const isCreateFileEvent = (e: Event): e is CreateFileEvent => {
@@ -160,11 +165,25 @@ export function confToCommands(conf: GitConf): Command[] {
       }
       commitCounter++;
     } else if (isTagEvent(event)) {
-      const tagName = event.substring("tag".length).trim();
-      if (tagName === "") {
-        throw new EventLogError(`"tag": missing tag name`, i + 1);
+      if (typeof event === "string") {
+        const tagName = event.substring("tag".length).trim();
+        if (tagName === "") {
+          throw new EventLogError(`"tag": missing tag name`, i + 1);
+        }
+        commands.push({
+          tag: { name: tagName, annotated: false, message: "", ...defaultUser },
+        });
+      } else {
+        commands.push({
+          tag: {
+            name: event.tag.name,
+            annotated: event.tag.annotated ?? false,
+            message: event.tag.message ?? `create tag ${event.tag.name}`,
+            author: event.tag.author ?? defaultUser.author,
+            email: event.tag.email ?? defaultUser.email,
+          },
+        });
       }
-      commands.push({ tag: { name: tagName } });
     } else if (isCreateFileEvent(event)) {
       if (typeof event === "string") {
         const fileName = event.substring("create file".length).trim();

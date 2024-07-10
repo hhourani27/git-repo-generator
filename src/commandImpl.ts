@@ -84,9 +84,22 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
       });
     };
   } else if ("tag" in command) {
-    return async () => {
-      await git.tag({ fs, dir, ref: command.tag.name });
-    };
+    const { name, annotated, message, author, email } = command.tag;
+    if (annotated) {
+      return async () => {
+        await git.annotatedTag({
+          fs,
+          dir,
+          ref: name,
+          message,
+          tagger: { name: author, email },
+        });
+      };
+    } else {
+      return async () => {
+        await git.tag({ fs, dir, ref: name });
+      };
+    }
   } else if ("change content" in command) {
     return async () => {
       await fs.writeFile(
