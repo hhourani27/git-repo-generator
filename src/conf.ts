@@ -26,6 +26,7 @@ export type MergeEvent =
         email?: string;
       };
     };
+export type TagEvent = WithPrefix<"tag">;
 
 export type CreateFileEvent =
   | WithPrefix<"create file">
@@ -39,6 +40,7 @@ export type Event =
   | BranchEvent
   | CheckoutEvent
   | MergeEvent
+  | TagEvent
   | CreateFileEvent
   | ChangeContentEvent
   | AppendContentEvent;
@@ -70,6 +72,10 @@ const isMergeEvent = (e: Event): e is MergeEvent => {
     (typeof e === "string" && e.startsWith("merge")) ||
     (typeof e === "object" && "merge" in e)
   );
+};
+
+const isTagEvent = (e: Event): e is TagEvent => {
+  return typeof e === "string" && e.startsWith("tag");
 };
 
 const isCreateFileEvent = (e: Event): e is CreateFileEvent => {
@@ -160,6 +166,12 @@ export function confToCommands(conf: GitConf): Command[] {
         });
       }
       commitCounter++;
+    } else if (isTagEvent(event)) {
+      const tagName = event.substring("tag".length).trim();
+      if (tagName === "") {
+        throw new EventLogError(`"tag": missing tag name`, i + 1);
+      }
+      commands.push({ tag: { name: tagName } });
     } else if (isCreateFileEvent(event)) {
       if (typeof event === "string") {
         const fileName = event.substring("create file".length).trim();

@@ -31,6 +31,12 @@ export type MergeCommand = {
   };
 };
 
+export type TagCommand = {
+  tag: {
+    name: string;
+  };
+};
+
 export type CreateFileCommand = {
   "create file": { file: string; content: string };
 };
@@ -49,6 +55,7 @@ export type Command =
   | CreateBranchCommand
   | CheckoutCommand
   | MergeCommand
+  | TagCommand
   | CreateFileCommand
   | ChangeContentCommand
   | AppendContentCommand;

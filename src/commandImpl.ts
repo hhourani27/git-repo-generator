@@ -83,6 +83,10 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         ref: (await git.currentBranch({ fs, dir })) as string,
       });
     };
+  } else if ("tag" in command) {
+    return async () => {
+      await git.tag({ fs, dir, ref: command.tag.name });
+    };
   } else if ("change content" in command) {
     return async () => {
       await fs.writeFile(
