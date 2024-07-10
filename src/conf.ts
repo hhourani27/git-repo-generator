@@ -3,6 +3,7 @@ import {
   ChangeContentCommand,
   Command,
   CommitCommand,
+  CommitInfo,
   CreateFileCommand,
   InitCommand,
 } from "./command";
@@ -11,9 +12,7 @@ import { EventLogError } from "./errors/EventLogError";
 type WithPrefix<T extends string> = `${T}${string}`;
 
 export type InitEvent = "init" | InitCommand;
-export type CommitEvent =
-  | "commit"
-  | { commit: { message?: string; name?: string; email?: string } };
+export type CommitEvent = "commit" | { commit: Partial<CommitInfo> };
 export type BranchEvent = WithPrefix<"branch">;
 export type CheckoutEvent = WithPrefix<"checkout">;
 export type MergeEvent =
@@ -21,11 +20,11 @@ export type MergeEvent =
   | {
       merge: {
         theirs: string;
-        message?: string;
-        name?: string;
-        email?: string;
-      };
+      } & Partial<CommitInfo>;
     };
+export type TagEvent =
+  | WithPrefix<"tag">
+  | { tag: { name: string; annotated?: boolean } & Partial<CommitInfo> };
 
 export type CreateFileEvent =
   | WithPrefix<"create file">
@@ -39,6 +38,7 @@ export type Event =
   | BranchEvent
   | CheckoutEvent
   | MergeEvent
+  | TagEvent
   | CreateFileEvent
   | ChangeContentEvent
   | AppendContentEvent;
@@ -72,6 +72,13 @@ const isMergeEvent = (e: Event): e is MergeEvent => {
   );
 };
 
+const isTagEvent = (e: Event): e is TagEvent => {
+  return (
+    (typeof e === "string" && e.startsWith("tag")) ||
+    (typeof e === "object" && "tag" in e)
+  );
+};
+
 const isCreateFileEvent = (e: Event): e is CreateFileEvent => {
   return (
     (typeof e === "string" && e.startsWith("create file")) ||
@@ -86,6 +93,8 @@ const isChangeContentEvent = (e: Event): e is ChangeContentEvent => {
 export type GitConf = {
   log: Event[];
 };
+
+const defaultUser = { author: "user-test", email: "user-test@example.com" };
 
 export function confToCommands(conf: GitConf): Command[] {
   const log = conf.log;
@@ -104,21 +113,17 @@ export function confToCommands(conf: GitConf): Command[] {
         commands.push(event);
       }
     } else if (isCommitEvent(event)) {
+      const defaultCommitInfo: CommitInfo = {
+        message: `commit ${commitCounter + 1}`,
+        ...defaultUser,
+      };
       if (event === "commit") {
         commands.push({
-          commit: {
-            message: `commit ${commitCounter + 1}`,
-            name: "user-test",
-            email: "user-test@example.com",
-          },
+          commit: defaultCommitInfo,
         });
       } else {
         commands.push({
-          commit: {
-            message: event.commit.message ?? `commit ${commitCounter + 1}`,
-            name: event.commit.name ?? "user-test",
-            email: event.commit.email ?? "user-test@example.com",
-          },
+          commit: Object.assign({}, defaultCommitInfo, event.commit),
         });
       }
       commitCounter++;
@@ -144,8 +149,7 @@ export function confToCommands(conf: GitConf): Command[] {
           merge: {
             theirs,
             message: `merge branch ${theirs}`,
-            name: "user-test",
-            email: "user-test@example.com",
+            ...defaultUser,
           },
         });
       } else {
@@ -154,12 +158,32 @@ export function confToCommands(conf: GitConf): Command[] {
             theirs: event.merge.theirs,
             message:
               event.merge.message ?? `merge branch ${event.merge.theirs}`,
-            name: event.merge.name ?? "user-test",
-            email: event.merge.email ?? "user-test@example.com",
+            author: event.merge.author ?? defaultUser.author,
+            email: event.merge.email ?? defaultUser.email,
           },
         });
       }
       commitCounter++;
+    } else if (isTagEvent(event)) {
+      if (typeof event === "string") {
+        const tagName = event.substring("tag".length).trim();
+        if (tagName === "") {
+          throw new EventLogError(`"tag": missing tag name`, i + 1);
+        }
+        commands.push({
+          tag: { name: tagName, annotated: false, message: "", ...defaultUser },
+        });
+      } else {
+        commands.push({
+          tag: {
+            name: event.tag.name,
+            annotated: event.tag.annotated ?? false,
+            message: event.tag.message ?? `create tag ${event.tag.name}`,
+            author: event.tag.author ?? defaultUser.author,
+            email: event.tag.email ?? defaultUser.email,
+          },
+        });
+      }
     } else if (isCreateFileEvent(event)) {
       if (typeof event === "string") {
         const fileName = event.substring("create file".length).trim();

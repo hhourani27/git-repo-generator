@@ -38,7 +38,7 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         dir,
         message: command.commit.message,
         author: {
-          name: command.commit.name,
+          name: command.commit.author,
           email: command.commit.email,
         },
       });
@@ -67,7 +67,7 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         theirs: command.merge.theirs,
         message: command.merge.message,
         author: {
-          name: command.merge.name,
+          name: command.merge.author,
           email: command.merge.email,
         },
         fastForward: false,
@@ -83,6 +83,23 @@ function mapCommandToImpl(command: Command, dir: string): CommandImpl {
         ref: (await git.currentBranch({ fs, dir })) as string,
       });
     };
+  } else if ("tag" in command) {
+    const { name, annotated, message, author, email } = command.tag;
+    if (annotated) {
+      return async () => {
+        await git.annotatedTag({
+          fs,
+          dir,
+          ref: name,
+          message,
+          tagger: { name: author, email },
+        });
+      };
+    } else {
+      return async () => {
+        await git.tag({ fs, dir, ref: name });
+      };
+    }
   } else if ("change content" in command) {
     return async () => {
       await fs.writeFile(

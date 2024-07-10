@@ -23,7 +23,7 @@ describe("Commit", () => {
         {
           commit: {
             message: "commit message",
-            name: "user1",
+            author: "user1",
             email: "user1@example.com",
           },
         },
@@ -48,7 +48,7 @@ describe("Commit", () => {
         "create file test.txt",
         {
           commit: {
-            name: "user1",
+            author: "user1",
             email: "user1@example.com",
           },
         },

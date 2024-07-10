@@ -43,7 +43,7 @@ export async function generateGitRepoFromCmdOpts(
     commands.push({
       commit: {
         message: `commit ${i + 1}`,
-        name: "user-test",
+        author: "user-test",
         email: "user-test@example.com",
       },
     });
