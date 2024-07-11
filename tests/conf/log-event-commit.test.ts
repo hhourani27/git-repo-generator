@@ -90,7 +90,7 @@ describe("Commit", () => {
     });
   });
 
-  test("Commit: no properties", async () => {
+  test("Commit: shorthand", async () => {
     const conf: GitConf = {
       log: ["init", "create file test.txt", "commit"],
     };
@@ -103,6 +103,23 @@ describe("Commit", () => {
       message: "commit 1\n",
       author: { name: "user-test", email: "user-test@example.com" },
       committer: { name: "user-test", email: "user-test@example.com" },
+    });
+  });
+
+  test("Commit: shorthand (with conf)", async () => {
+    const conf: GitConf = {
+      log: ["init", "create file test.txt", "commit"],
+      conf: { author: "user1", email: "user1@ex.com" },
+    };
+
+    await generateGitRepo(dir, conf);
+
+    const log = await git.log({ fs, dir });
+    expect(log).toHaveLength(1);
+    expect(log[0].commit).toMatchObject({
+      message: "commit 1\n",
+      author: { name: "user1", email: "user1@ex.com" },
+      committer: { name: "user1", email: "user1@ex.com" },
     });
   });
 });

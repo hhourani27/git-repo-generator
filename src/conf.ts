@@ -1,13 +1,12 @@
 import {
   ChangeContentCommand,
   Command,
-  CommitCommand,
   CommitInfo,
-  CreateFileCommand,
   InitCommand,
 } from "./command";
 import { EventLogError } from "./errors/EventLogError";
 
+//#region Log events
 type WithPrefix<T extends string> = `${T}${string}`;
 
 export type InitEvent = "init" | InitCommand;
@@ -87,16 +86,40 @@ const isChangeContentEvent = (e: Event): e is ChangeContentEvent => {
   return typeof e === "object" && "change content" in e;
 };
 
-export type GitConf = {
-  log: Event[];
+//#endregion
+
+//#region Git conf
+type Conf = {
+  author?: string;
+  email?: string;
 };
 
-const defaultUser = { author: "user-test", email: "user-test@example.com" };
+export type GitConf = {
+  log: Event[];
+  conf?: Conf;
+};
 
-export function confToCommands(conf: GitConf): Command[] {
-  const log = conf.log;
+//#region Git conf to Commands converter
 
+function getDefaultUser(conf: Conf | undefined): {
+  author: string;
+  email: string;
+} {
+  const DEFAULT_USER = { author: "user-test", email: "user-test@example.com" };
+
+  if (!conf) return DEFAULT_USER;
+  else
+    return {
+      author: conf.author ?? DEFAULT_USER.author,
+      email: conf.email ?? DEFAULT_USER.email,
+    };
+}
+
+export function confToCommands(gitConf: GitConf): Command[] {
+  const { log, conf } = gitConf;
   const commands: Command[] = [];
+
+  const defaultUser = getDefaultUser(conf);
 
   let commitCounter = 0;
 
@@ -168,7 +191,12 @@ export function confToCommands(conf: GitConf): Command[] {
           throw new EventLogError(`"tag": missing tag name`, i + 1);
         }
         commands.push({
-          tag: { name: tagName, annotated: false, message: "", ...defaultUser },
+          tag: {
+            name: tagName,
+            annotated: false,
+            message: "",
+            ...defaultUser,
+          },
         });
       } else {
         commands.push({
@@ -202,3 +230,4 @@ export function confToCommands(conf: GitConf): Command[] {
 
   return commands;
 }
+//#endregion

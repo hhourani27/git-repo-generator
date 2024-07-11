@@ -259,4 +259,32 @@ describe("Merge", () => {
       ["test.txt", 1, 1, 1],
     ]);
   });
+
+  test("Merge: shorthand, with author,email conf", async () => {
+    const conf: GitConf = {
+      log: [
+        "init",
+        "create file test-main.txt",
+        "commit",
+        "branch develop",
+        "checkout develop",
+        "create file test-develop.txt",
+        "commit",
+        "checkout main",
+        "merge develop",
+      ],
+      conf: { author: "user1", email: "user1@ex.com" },
+    };
+
+    await generateGitRepo(dir, conf);
+
+    const log = await git.log({ fs, dir });
+    const mergeCommit = log[0];
+
+    expect(mergeCommit.commit).toMatchObject({
+      message: "merge branch develop\n",
+      author: { name: "user1", email: "user1@ex.com" },
+      committer: { name: "user1", email: "user1@ex.com" },
+    });
+  });
 });

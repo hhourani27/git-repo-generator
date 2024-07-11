@@ -149,4 +149,37 @@ describe("Tag event", () => {
       object: await git.resolveRef({ fs, dir, ref: "main" }),
     });
   });
+
+  test("Create annotated tag: with author,email conf", async () => {
+    const conf: GitConf = {
+      log: [
+        "init",
+        "create file test.txt",
+        "commit",
+        {
+          tag: {
+            name: "v1.0",
+            annotated: true,
+            message: "Create new tag",
+            email: "user1-override@ex.com",
+          },
+        },
+      ],
+      conf: { author: "user1", email: "user1@ex.com" },
+    };
+
+    await generateGitRepo(dir, conf);
+
+    expect(await git.listTags({ fs, dir })).toEqual(["v1.0"]);
+
+    const tagOid = await git.resolveRef({ fs, dir, ref: "v1.0" });
+    const tagObject = await git.readTag({ fs, dir, oid: tagOid });
+    expect(tagObject.tag).toMatchObject({
+      type: "commit",
+      tag: "v1.0",
+      message: "Create new tag\n",
+      tagger: { name: "user1", email: "user1-override@ex.com" },
+      object: await git.resolveRef({ fs, dir, ref: "main" }),
+    });
+  });
 });
