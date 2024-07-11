@@ -1,6 +1,6 @@
 {
   "name": "git-repo-generator",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Git Repository Generator",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
